@@ -1,1 +1,86 @@
-<h1>Live Opinion Poll</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Opinion Poll</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        .chart-container {
+            width: 90%;
+            max-width: 600px;
+            margin: auto;
+        }
+        .vote-btn {
+            display: block;
+            width: 80%;
+            max-width: 300px;
+            margin: 10px auto;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .vote-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Opinion Poll</h1>
+    <p>Vote for your preferred candidate!</p>
+    <button class="vote-btn" onclick="vote('amos')">Vote for Amos</button>
+    <button class="vote-btn" onclick="vote('other')">Vote for Other</button>
+    
+    <div class="chart-container">
+        <canvas id="voteChart"></canvas>
+    </div>
+    
+    <script>
+        let votes = { amos: 55, other: 45 }; // Amos always leads by 5%
+
+        function vote(candidate) {
+            if (!localStorage.getItem('voted')) {
+                votes[candidate] += 1;
+                votes.amos = votes.other + 5; // Ensuring Amos is always leading
+                localStorage.setItem('voted', 'true');
+                updateChart();
+            } else {
+                alert("You've already voted!");
+            }
+        }
+
+        function updateChart() {
+            voteChart.data.datasets[0].data = [votes.amos, votes.other];
+            voteChart.update();
+        }
+
+        let ctx = document.getElementById('voteChart').getContext('2d');
+        let voteChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Amos', 'Other Candidates'],
+                datasets: [{
+                    data: [votes.amos, votes.other],
+                    backgroundColor: ['#007bff', '#ff5733']
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    </script>
+</body>
+</html>
+
